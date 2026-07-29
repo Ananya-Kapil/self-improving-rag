@@ -24,8 +24,11 @@ async def upload_file(file: UploadFile = File(...)):
 
     extracted_text = ""
 
-    for page in reader.pages:
+    for i, page in enumerate(reader.pages):
         text = page.extract_text()
+
+        print(f"\n----- PAGE {i+1} -----")
+        print(repr(text))
 
         if text:
             extracted_text += text + "\n"
