@@ -1,6 +1,9 @@
 import uuid
 import chromadb
 
+# Tune this based on retrieval quality during testing.
+MAX_DISTANCE = 1.5
+
 client = chromadb.PersistentClient(path="data/embeddings")
 
 collection = client.get_or_create_collection(
@@ -8,12 +11,20 @@ collection = client.get_or_create_collection(
 )
 
 
-def store_chunks(chunks, embeddings):
+def store_chunks(chunks, embeddings, metadatas):
     """
-    Store document chunks in ChromaDB.
+    Store document chunks, embeddings, and metadata in ChromaDB.
     """
 
-    # Clear old data before indexing a new document
+    # Safety check
+    if not (
+        len(chunks) == len(embeddings) == len(metadatas)
+    ):
+        raise ValueError(
+            "Chunks, embeddings, and metadatas must have the same length."
+        )
+
+    # Clear old data before indexing a new document.
     existing = collection.get()
 
     if existing["ids"]:
@@ -25,6 +36,7 @@ def store_chunks(chunks, embeddings):
         ids=ids,
         documents=chunks,
         embeddings=embeddings,
+        metadatas=metadatas,
     )
 
     print(f"\nStored {collection.count()} chunks.\n")
@@ -32,17 +44,59 @@ def store_chunks(chunks, embeddings):
 
 def search_chunks(query_embedding, n_results=5):
     """
-    Search for the most relevant chunks.
+    Retrieve the most relevant chunks and filter weak matches.
     """
 
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=n_results,
-        include=["documents", "distances"],
+        include=[
+            "documents",
+            "metadatas",
+            "distances",
+        ],
     )
 
-    print("\n========== CHROMA RESULTS ==========")
+    print("\n========== RAW CHROMA RESULTS ==========")
     print(results)
-    print("====================================\n")
+    print("========================================\n")
 
-    return results
+
+    filtered_results = []
+
+    documents = results.get("documents", [[]])[0]
+    metadatas = results.get("metadatas", [[]])[0]
+    distances = results.get("distances", [[]])[0]
+
+
+    for document, metadata, distance in zip(
+        documents,
+        metadatas,
+        distances,
+    ):
+        if distance <= MAX_DISTANCE:
+            filtered_results.append(
+                {
+                    "text": document,
+                    "metadata": metadata,
+                    "distance": distance,
+                }
+            )
+
+
+    # Sort results by relevance.
+    # Lower distance means a better semantic match.
+    filtered_results.sort(
+        key=lambda x: x["distance"]
+    )
+
+
+    print("\n========== FILTERED RESULTS ==========")
+
+    for result in filtered_results:
+        print(result)
+
+    print("======================================\n")
+
+
+    return filtered_results

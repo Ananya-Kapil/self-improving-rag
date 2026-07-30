@@ -15,30 +15,45 @@ def generate_answer(question: str, context: str):
         "Content-Type": "application/json",
     }
 
+    system_prompt = """
+You are an AI assistant for Retrieval-Augmented Generation (RAG).
+
+Rules:
+1. Answer ONLY using the provided context.
+2. Do NOT use outside knowledge.
+3. If the answer is not present in the context, reply exactly:
+   "I couldn't find that information in the uploaded documents."
+4. Do not guess or hallucinate.
+5. Mention the page number(s) whenever the context includes them.
+6. If multiple pages support the answer, cite all relevant pages.
+7. Keep answers concise, factual, and well-structured.
+"""
+
+    user_prompt = f"""
+Context:
+----------------
+{context}
+----------------
+
+Question:
+{question}
+
+Answer:
+"""
+
     payload = {
         "model": "openrouter/free",
         "messages": [
             {
                 "role": "system",
-                "content": (
-                    "You are a RAG assistant. "
-                    "Answer ONLY from the provided context. "
-                    "If the answer is not in the context, reply: "
-                    "'I couldn't find the answer in the uploaded documents.'"
-                ),
+                "content": system_prompt,
             },
             {
                 "role": "user",
-                "content": f"""
-Context:
-{context}
-
-Question:
-{question}
-""",
+                "content": user_prompt,
             },
         ],
-        "temperature": 0.2,
+        "temperature": 0.0,
     }
 
     try:
@@ -49,11 +64,14 @@ Question:
             timeout=60,
         )
 
-        if response.status_code != 200:
-            return f"LLM Error: {response.status_code}\n{response.text}"
+        response.raise_for_status()
 
         data = response.json()
-        return data["choices"][0]["message"]["content"]
 
-    except Exception as e:
+        return data["choices"][0]["message"]["content"].strip()
+
+    except requests.exceptions.RequestException as e:
         return f"LLM Error: {e}"
+
+    except (KeyError, IndexError):
+        return "LLM Error: Invalid response received from the model."
