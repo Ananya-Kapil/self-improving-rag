@@ -5,3 +5,4 @@ __pycache__/
 
 backend/data/uploads/
 backend/data/embeddings/
+test_gemini.py
