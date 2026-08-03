@@ -7,7 +7,7 @@ load_dotenv()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
-def generate_answer(question: str, context: str):
+def generate_answer(question: str, context: str, history: list = None):
     url = "https://openrouter.ai/api/v1/chat/completions"
 
     headers = {
@@ -26,7 +26,9 @@ Rules:
 4. Do not guess or hallucinate.
 5. Mention the page number(s) whenever the context includes them.
 6. If multiple pages support the answer, cite all relevant pages.
-7. Keep answers concise, factual, and well-structured.
+7. Use the previous conversation only to understand follow-up questions.
+8. Never answer using chat history alone. The retrieved context is the source of truth.
+9. Keep answers concise, factual, and well-structured.
 """
 
     user_prompt = f"""
@@ -41,18 +43,26 @@ Question:
 Answer:
 """
 
+    messages = [
+        {
+            "role": "system",
+            "content": system_prompt,
+        }
+    ]
+
+    if history:
+        messages.extend(history)
+
+    messages.append(
+        {
+            "role": "user",
+            "content": user_prompt,
+        }
+    )
+
     payload = {
         "model": "openrouter/free",
-        "messages": [
-            {
-                "role": "system",
-                "content": system_prompt,
-            },
-            {
-                "role": "user",
-                "content": user_prompt,
-            },
-        ],
+        "messages": messages,
         "temperature": 0.0,
     }
 

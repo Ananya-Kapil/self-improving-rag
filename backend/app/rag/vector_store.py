@@ -2,7 +2,7 @@ import uuid
 import chromadb
 
 # Tune this based on retrieval quality during testing.
-MAX_DISTANCE = 1.5
+MAX_DISTANCE = 2.0
 
 client = chromadb.PersistentClient(path="data/embeddings")
 

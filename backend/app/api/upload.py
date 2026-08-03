@@ -6,7 +6,7 @@ from app.utils.text_splitter import chunk_text
 from app.utils.text_filter import should_skip_chunk
 from app.rag.embeddings import get_embeddings
 from app.rag.vector_store import store_chunks
-
+from app.rag.bm25 import build_bm25_index
 
 router = APIRouter()
 
@@ -60,7 +60,6 @@ async def upload_file(file: UploadFile = File(...)):
                 }
             )
 
-
     print("\n========== CHUNKS ==========")
     print(f"Total valid chunks: {len(all_chunks)}")
 
@@ -71,14 +70,12 @@ async def upload_file(file: UploadFile = File(...)):
 
     print("============================")
 
-
     # Generate embeddings
     embeddings = get_embeddings(all_chunks)
 
     print(
         f"\nGenerated {len(embeddings)} embeddings"
     )
-
 
     # Store chunks with metadata
     store_chunks(
@@ -87,6 +84,11 @@ async def upload_file(file: UploadFile = File(...)):
         all_metadatas,
     )
 
+    # Build BM25 index
+    build_bm25_index(
+        all_chunks,
+        all_metadatas,
+    )
 
     return {
         "filename": file.filename,
