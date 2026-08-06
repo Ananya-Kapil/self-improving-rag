@@ -5,6 +5,7 @@ from app.rag.embeddings import get_embeddings
 from app.rag.hybrid_retriever import retrieve
 from app.services.llm import generate_answer
 from app.services.query_rewriter import rewrite_query
+from app.services.logger import log_query
 
 router = APIRouter()
 
@@ -14,21 +15,10 @@ class QueryRequest(BaseModel):
     history: list = []
 
 
-def choose_results_count(question: str):
-    words = len(question.split())
-
-    if words <= 5:
-        return 3
-    elif words <= 12:
-        return 5
-    else:
-        return 8
-
-
 @router.post("/query")
 async def query(request: QueryRequest):
 
-    # Rewrite follow-up questions into standalone questions
+    # Rewrite follow-up question
     rewritten_question = rewrite_query(
         request.question,
         request.history,
@@ -37,17 +27,16 @@ async def query(request: QueryRequest):
     print(f"\nOriginal Question: {request.question}")
     print(f"Rewritten Question: {rewritten_question}\n")
 
-    # Convert rewritten question into embedding
-    query_embedding = get_embeddings([rewritten_question])[0]
+    # Create embedding
+    query_embedding = get_embeddings(
+        [rewritten_question]
+    )[0]
 
-    # Decide retrieval count
-    n_results = choose_results_count(rewritten_question)
-
-    # Hybrid retrieval (Chroma + BM25)
+    # Hybrid retrieval
     results = retrieve(
         rewritten_question,
         query_embedding,
-        top_k=n_results,
+        top_k=5,
     )
 
     if not results:
@@ -61,6 +50,7 @@ async def query(request: QueryRequest):
     context_parts = []
 
     for result in results:
+
         metadata = result["metadata"]
 
         context_parts.append(
@@ -73,7 +63,9 @@ Chunk: {metadata['chunk_number']}
 """
         )
 
-    context = "\n\n------------------------\n\n".join(context_parts)
+    context = "\n\n------------------------\n\n".join(
+        context_parts
+    )
 
     # Generate answer
     answer = generate_answer(
@@ -82,7 +74,16 @@ Chunk: {metadata['chunk_number']}
         request.history,
     )
 
+    # Save log and get its timestamp
+    timestamp = log_query(
+        question=request.question,
+        rewritten_question=rewritten_question,
+        answer=answer,
+        context=results,
+    )
+
     return {
+        "timestamp": timestamp,
         "question": request.question,
         "rewritten_question": rewritten_question,
         "answer": answer,

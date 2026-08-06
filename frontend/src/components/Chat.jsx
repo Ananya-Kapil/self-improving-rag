@@ -1,53 +1,43 @@
 import { useState } from "react";
 import api from "../services/api";
-import SourcePanel from "./SourcePanel";
 
 function Chat() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  const [sources, setSources] = useState([]);
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [timestamp, setTimestamp] = useState(null);
 
   const askQuestion = async () => {
     if (!question.trim()) return;
 
-    setLoading(true);
-
     try {
       const res = await api.post("/query", {
-        question: question,
-        history: history,
+        question,
+        history: [],
       });
 
       setAnswer(res.data.answer);
-      setSources(res.data.context);
 
-      setHistory((prev) => [
-        ...prev,
-        {
-          role: "user",
-          content: question,
-        },
-        {
-          role: "assistant",
-          content: res.data.answer,
-        },
-      ]);
-
-      setQuestion("");
+      // Save the backend-generated timestamp
+      setTimestamp(res.data.timestamp);
     } catch (err) {
       console.error(err);
       setAnswer("Failed to get answer.");
-      setSources([]);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      askQuestion();
+  const sendFeedback = async (feedback) => {
+    if (!timestamp) return;
+
+    try {
+      await api.post("/feedback", {
+        timestamp,
+        feedback,
+      });
+
+      alert("Feedback submitted successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to submit feedback.");
     }
   };
 
@@ -60,17 +50,28 @@ function Chat() {
         placeholder="Ask about your PDF..."
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
-        onKeyDown={handleKeyDown}
       />
 
-      <button onClick={askQuestion} disabled={loading}>
-        {loading ? "Thinking..." : "Ask"}
-      </button>
+      <button onClick={askQuestion}>Ask</button>
 
       <h3>Answer</h3>
+
       <p>{answer}</p>
 
-      <SourcePanel sources={sources} />
+      {answer && (
+        <div style={{ marginTop: "15px" }}>
+          <button onClick={() => sendFeedback("positive")}>
+            👍 Helpful
+          </button>
+
+          <button
+            onClick={() => sendFeedback("negative")}
+            style={{ marginLeft: "10px" }}
+          >
+            👎 Not Helpful
+          </button>
+        </div>
+      )}
     </div>
   );
 }

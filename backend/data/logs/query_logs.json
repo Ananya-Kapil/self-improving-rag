@@ -1,0 +1,206 @@
+[
+    {
+        "timestamp": "2026-08-03T19:30:17.583538",
+        "question": "what is the objective of this document",
+        "rewritten_question": "what is the objective of this document",
+        "answer": "The document's objectives, as stated on **Page 9**, are:\n\n1. **Develop an AI-powered system** for predicting loan approval status using machine learning algorithms.\n2. **Analyse applicant financial details** such as income, loan amount, assets, employment status, and CIBIL score.\n3. **Reduce dependency on only the CIBIL score** by integrating additional credit behaviour parameters.\n4. **Compare multiple machine learning models** and select the best-performing one.",
+        "feedback": null,
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil_removed.pdf",
+                "page": 9,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil_removed.pdf",
+                "page": 12,
+                "chunk": 3
+            },
+            {
+                "filename": "loan prediction report ananya kapil_removed.pdf",
+                "page": 7,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil_removed.pdf",
+                "page": 11,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil_removed.pdf",
+                "page": 12,
+                "chunk": 1
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-08-06T18:24:17.717709",
+        "question": "What is the objective of the project?",
+        "rewritten_question": "What is the objective of the project?",
+        "answer": "The project has the following key objectives:\n\n\u2022 To develop an AI-powered system for predicting loan approval status using machine learning algorithms.  \n\u2022 To analyse applicant financial details such as income, loan amount, assets, employment status, and CIBIL score.  \n\u2022 To reduce dependency on only the CIBIL score by integrating additional credit behaviour parameters.  \n\u2022 To compare multiple machine learning models and select the best-performing one.\n\n(Page 12)",
+        "feedback": null,
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-08-06T18:24:20.177092",
+        "question": "What is the objective of the project?",
+        "rewritten_question": "What is the objective of the project?",
+        "answer": "The objectives of the project (Loan Approval and Credit Health Prediction System) are as follows:\n\n1. **Develop an AI-powered system** for predicting loan approval status using machine learning algorithms.\n2. **Analyse applicant financial details** such as income, loan amount, assets, employment status, and CIBIL score.\n3. **Reduce dependency on only the CIBIL score** by integrating additional credit behaviour parameters.\n4. **Compare multiple machine learning models** and select the best-performing one.\n\nThese objectives collectively aim to transform a simple prediction model into an intelligent financial decision-support platform that analyses both financial and behavioural factors for more balanced loan approval decisions.",
+        "feedback": null,
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-08-06T18:24:23.405973",
+        "question": "What is the objective of the project?",
+        "rewritten_question": "What is the objective of the project?",
+        "answer": "User Safety: safe",
+        "feedback": null,
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-08-06T18:28:09.634267",
+        "question": "what is the objective of this document",
+        "rewritten_question": "what is the objective of this document",
+        "answer": "The objectives of this document, as stated on **Page 12**, are:\n\n1. **To develop an AI-powered system** for predicting loan approval status using machine learning algorithms.\n2. **To analyse applicant financial details** such as income, loan amount, assets, employment status, and CIBIL score.\n3. **To reduce dependency on only the CIBIL score** by integrating additional credit behaviour parameters.\n4. **To compare multiple machine learning models** and select the best-performing one.\n\nThe document further highlights (on **Page 15**) that the project aims to transform a simple prediction model into an intelligent financial decision-support platform, incorporating a Credit Health Score and personalized suggestions for improving financial behaviour.",
+        "feedback": null,
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-08-06T18:28:14.803437",
+        "question": "what is the objective of this document",
+        "rewritten_question": "what is the objective of this document",
+        "answer": "Based on the document, the project has the following key objectives (Page 12):\n\n- To develop an AI-powered system for predicting loan approval status using machine learning algorithms\n- To analyse applicant financial details such as income, loan amount, assets, employment status, and CIBIL score\n- To reduce dependency on only the CIBIL score by integrating additional credit behaviour parameters\n- To compare multiple machine learning models and select the best-performing model",
+        "feedback": "positive",
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            }
+        ]
+    }
+]
