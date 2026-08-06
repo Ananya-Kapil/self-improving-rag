@@ -6,6 +6,7 @@ from app.rag.hybrid_retriever import retrieve
 from app.services.llm import generate_answer
 from app.services.query_rewriter import rewrite_query
 from app.services.logger import log_query
+from app.services.feedback_scorer import load_feedback_scores
 
 router = APIRouter()
 
@@ -46,6 +47,51 @@ async def query(request: QueryRequest):
             "context": [],
         }
 
+    # -----------------------------
+    # Apply feedback learning
+    # -----------------------------
+    feedback_scores = load_feedback_scores()
+
+    for result in results:
+
+        metadata = result["metadata"]
+
+        key = (
+            metadata["filename"],
+            metadata["page_number"],
+            metadata["chunk_number"],
+        )
+
+        feedback_score = feedback_scores.get(key, 0)
+
+        # Save feedback score
+        result["feedback_score"] = feedback_score
+
+        # Boost final score
+        result["score"] += feedback_score
+
+    # Sort after boosting
+    results.sort(
+        key=lambda x: x["score"],
+        reverse=True,
+    )
+
+    print("\n===== SELF-IMPROVED RANKING =====")
+
+    for i, result in enumerate(results, start=1):
+
+        metadata = result["metadata"]
+
+        print(
+            f"{i}. "
+            f"Page {metadata['page_number']} "
+            f"Chunk {metadata['chunk_number']} "
+            f"Score={result['score']:.3f} "
+            f"Feedback={result['feedback_score']}"
+        )
+
+    print("===============================\n")
+
     # Build context
     context_parts = []
 
@@ -74,7 +120,7 @@ Chunk: {metadata['chunk_number']}
         request.history,
     )
 
-    # Save log and get its timestamp
+    # Save log
     timestamp = log_query(
         question=request.question,
         rewritten_question=rewritten_question,

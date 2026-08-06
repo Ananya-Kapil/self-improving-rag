@@ -202,5 +202,141 @@
                 "chunk": 1
             }
         ]
+    },
+    {
+        "timestamp": "2026-08-06T19:11:29.951819",
+        "question": "What is the objective of this document?",
+        "rewritten_question": "What is the objective of this document?",
+        "answer": "The objective of this document is to outline the project\u2019s goals: to develop an AI\u2011powered system for predicting loan approval status using machine learning, to analyze applicant financial details (income, loan amount, assets, employment status, CIBIL score), to reduce reliance on the CIBIL score alone by integrating additional credit\u2011behavior parameters, and to compare multiple machine learning models to select the best\u2011performing one. (Page\u202f12)",
+        "feedback": null,
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-08-06T19:11:36.554124",
+        "question": "What is the objective of this document?",
+        "rewritten_question": "What is the objective of this document?",
+        "answer": "The document\u2019s objective is to develop an AI\u2011powered system for predicting loan approval status using machine learning algorithms, analyze applicant financial details (income, loan amount, assets, employment status, CIBIL score), reduce reliance on the CIBIL score alone by integrating additional credit\u2011behavior parameters, and compare multiple machine learning models to select the best\u2011performing one. (Page\u202f12)",
+        "feedback": "positive",
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-08-06T19:19:56.919815",
+        "question": "What is the objective of this document?",
+        "rewritten_question": "What is the objective of this document?",
+        "answer": "The document\u2019s objective is to develop an AI\u2011powered system that predicts loan approval using machine\u2011learning algorithms, analyze applicants\u2019 financial details (income, loan amount, assets, employment status, CIBIL score), reduce reliance on the CIBIL score by incorporating additional credit\u2011behaviour parameters, and compare multiple ML models to select the best\u2011performing one.\u202f[Page\u202f12]",
+        "feedback": "positive",
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-08-06T19:25:02.902466",
+        "question": "what is the objective of this document",
+        "rewritten_question": "what is the objective of this document",
+        "answer": "The document\u2019s objectives are to:\n\n- Develop an AI\u2011powered system for predicting loan approval status using machine\u2011learning algorithms.  \n- Analyse applicant financial details such as income, loan amount, assets, employment status, and CIBIL score.  \n- Reduce dependency on only the CIBIL score by integrating additional credit\u2011behaviour parameters.  \n- Compare multiple machine\u2011learning models and select the best\u2011performing one.  \n\nThese points are listed under **OBJECTIVES** on **page\u202f12** of the report.",
+        "feedback": null,
+        "context": [
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 10,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 12,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 14,
+                "chunk": 1
+            },
+            {
+                "filename": "loan prediction report ananya kapil.pdf",
+                "page": 15,
+                "chunk": 3
+            }
+        ]
     }
 ]
