@@ -7,10 +7,13 @@ def retrieve(query, query_embedding, top_k=5):
     """
     Hybrid Retrieval Pipeline
 
-    1. Retrieve more candidates
-    2. Fuse semantic + BM25
-    3. Cross-encoder reranks
-    4. Return best top_k chunks
+    1. Retrieve semantic + BM25 candidates
+    2. Fuse both retrieval methods
+    3. Cross-encoder reranks the fused candidates
+    4. Return the best top_k chunks
+
+    Uses filename + page + chunk as the unique key
+    so multiple PDFs cannot overwrite each other's chunks.
     """
 
     # Retrieve more candidates
@@ -26,11 +29,12 @@ def retrieve(query, query_embedding, top_k=5):
 
     fused = {}
 
-    # ---------------- Semantic ----------------
+    # ---------------- Semantic Retrieval ----------------
 
     for result in semantic_results:
 
         key = (
+            result["metadata"]["filename"],
             result["metadata"]["page_number"],
             result["metadata"]["chunk_number"],
         )
@@ -46,30 +50,40 @@ def retrieve(query, query_embedding, top_k=5):
             "score": similarity * 0.7,
         }
 
-    # ---------------- BM25 ----------------
+    # ---------------- BM25 Retrieval ----------------
 
     if keyword_results:
 
-        max_score = max(r["score"] for r in keyword_results)
+        max_score = max(
+            r["score"] for r in keyword_results
+        )
 
-        for result in keyword_results:
+        # Avoid division by zero
+        if max_score > 0:
 
-            key = (
-                result["metadata"]["page_number"],
-                result["metadata"]["chunk_number"],
-            )
+            for result in keyword_results:
 
-            normalized = result["score"] / max_score
+                key = (
+                    result["metadata"]["filename"],
+                    result["metadata"]["page_number"],
+                    result["metadata"]["chunk_number"],
+                )
 
-            if key in fused:
-                fused[key]["score"] += normalized * 0.3
+                normalized = result["score"] / max_score
 
-            else:
-                fused[key] = {
-                    "text": result["text"],
-                    "metadata": result["metadata"],
-                    "score": normalized * 0.3,
-                }
+                if key in fused:
+
+                    fused[key]["score"] += normalized * 0.3
+
+                else:
+
+                    fused[key] = {
+                        "text": result["text"],
+                        "metadata": result["metadata"],
+                        "score": normalized * 0.3,
+                    }
+
+    # ---------------- Sort Fused Results ----------------
 
     fused_results = sorted(
         fused.values(),
@@ -79,9 +93,14 @@ def retrieve(query, query_embedding, top_k=5):
 
     print("\n===== FUSED RESULTS =====")
 
-    for i, result in enumerate(fused_results, start=1):
+    for i, result in enumerate(
+        fused_results,
+        start=1,
+    ):
+
         print(
             f"{i}. "
+            f"{result['metadata']['filename']} | "
             f"Page {result['metadata']['page_number']} "
             f"Chunk {result['metadata']['chunk_number']} "
             f"Fusion={result['score']:.3f}"
@@ -89,7 +108,8 @@ def retrieve(query, query_embedding, top_k=5):
 
     print("=========================\n")
 
-    # Let CrossEncoder choose the best chunks
+    # ---------------- Cross-Encoder Reranking ----------------
+
     final_results = rerank(
         query,
         fused_results,

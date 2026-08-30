@@ -1,5 +1,6 @@
+
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.rag.embeddings import get_embeddings
 from app.rag.hybrid_retriever import retrieve
@@ -13,27 +14,37 @@ router = APIRouter()
 
 class QueryRequest(BaseModel):
     question: str
-    history: list = []
+    history: list = Field(default_factory=list)
 
 
 @router.post("/query")
 async def query(request: QueryRequest):
 
-    # Rewrite follow-up question
+    # -----------------------------
+    # Query rewriting
+    # -----------------------------
+    print("\n===== QUERY REWRITING =====")
+    print(f"Original Question: {request.question}")
+    print(f"History Received: {request.history}")
+
     rewritten_question = rewrite_query(
         request.question,
         request.history,
     )
 
-    print(f"\nOriginal Question: {request.question}")
-    print(f"Rewritten Question: {rewritten_question}\n")
+    print(f"Rewritten Question: {rewritten_question}")
+    print("===========================\n")
 
+    # -----------------------------
     # Create embedding
+    # -----------------------------
     query_embedding = get_embeddings(
         [rewritten_question]
     )[0]
 
+    # -----------------------------
     # Hybrid retrieval
+    # -----------------------------
     results = retrieve(
         rewritten_question,
         query_embedding,
@@ -43,6 +54,7 @@ async def query(request: QueryRequest):
     if not results:
         return {
             "question": request.question,
+            "rewritten_question": rewritten_question,
             "answer": "I couldn't find any relevant information in the uploaded documents.",
             "context": [],
         }
@@ -64,13 +76,11 @@ async def query(request: QueryRequest):
 
         feedback_score = feedback_scores.get(key, 0)
 
-        # Save feedback score
         result["feedback_score"] = feedback_score
 
-        # Boost final score
         result["score"] += feedback_score
 
-    # Sort after boosting
+    # Sort after feedback boost
     results.sort(
         key=lambda x: x["score"],
         reverse=True,
@@ -92,7 +102,9 @@ async def query(request: QueryRequest):
 
     print("===============================\n")
 
+    # -----------------------------
     # Build context
+    # -----------------------------
     context_parts = []
 
     for result in results:
@@ -113,14 +125,18 @@ Chunk: {metadata['chunk_number']}
         context_parts
     )
 
+    # -----------------------------
     # Generate answer
+    # -----------------------------
     answer = generate_answer(
         request.question,
         context,
         request.history,
     )
 
+    # -----------------------------
     # Save log
+    # -----------------------------
     timestamp = log_query(
         question=request.question,
         rewritten_question=rewritten_question,
@@ -128,6 +144,9 @@ Chunk: {metadata['chunk_number']}
         context=results,
     )
 
+    # -----------------------------
+    # Response
+    # -----------------------------
     return {
         "timestamp": timestamp,
         "question": request.question,
