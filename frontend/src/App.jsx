@@ -1,5 +1,7 @@
+
 import Upload from "./components/Upload";
 import Chat from "./components/Chat";
+import Analytics from "./components/Analytics";
 
 function App() {
   return (
@@ -11,8 +13,13 @@ function App() {
       <hr />
 
       <Chat />
+
+      <hr />
+
+      <Analytics />
     </div>
   );
 }
 
 export default App;
+
