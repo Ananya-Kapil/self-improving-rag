@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import api from "../services/api";
 
@@ -6,19 +7,40 @@ function Chat() {
   const [answer, setAnswer] = useState("");
   const [timestamp, setTimestamp] = useState(null);
 
+  // Store previous conversation
+  const [history, setHistory] = useState([]);
+
   const askQuestion = async () => {
     if (!question.trim()) return;
 
+    const currentQuestion = question.trim();
+
     try {
       const res = await api.post("/query", {
-        question,
-        history: [],
+        question: currentQuestion,
+        history: history,
       });
 
-      setAnswer(res.data.answer);
+      const newAnswer = res.data.answer;
 
-      // Save the backend-generated timestamp
+      setAnswer(newAnswer);
       setTimestamp(res.data.timestamp);
+
+      // Add this conversation turn to history
+      setHistory((prev) => [
+        ...prev,
+        {
+          role: "user",
+          content: currentQuestion,
+        },
+        {
+          role: "assistant",
+          content: newAnswer,
+        },
+      ]);
+
+      // Clear input after asking
+      setQuestion("");
     } catch (err) {
       console.error(err);
       setAnswer("Failed to get answer.");
@@ -50,6 +72,11 @@ function Chat() {
         placeholder="Ask about your PDF..."
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            askQuestion();
+          }
+        }}
       />
 
       <button onClick={askQuestion}>Ask</button>
@@ -77,3 +104,4 @@ function Chat() {
 }
 
 export default Chat;
+
