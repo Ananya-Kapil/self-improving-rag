@@ -39,22 +39,6 @@ function Analytics() {
     return null;
   }
 
-  const totalQueries = analytics.total_queries || 0;
-  const positive = analytics.positive || 0;
-  const negative = analytics.negative || 0;
-
-  const totalFeedback = positive + negative;
-
-  const feedbackRate =
-    totalQueries > 0
-      ? (totalFeedback / totalQueries) * 100
-      : 0;
-
-  const helpfulnessRate =
-    totalFeedback > 0
-      ? (positive / totalFeedback) * 100
-      : 0;
-
   return (
     <div style={{ marginTop: "30px" }}>
       <h2>Analytics</h2>
@@ -62,39 +46,56 @@ function Analytics() {
       <div
         style={{
           display: "flex",
-          gap: "30px",
+          gap: "20px",
           flexWrap: "wrap",
         }}
       >
         <div>
           <strong>Total Queries</strong>
-          <p>{totalQueries}</p>
+          <p>{analytics.total_queries}</p>
         </div>
 
         <div>
           <strong>👍 Positive</strong>
-          <p>{positive}</p>
+          <p>{analytics.positive}</p>
         </div>
 
         <div>
           <strong>👎 Negative</strong>
-          <p>{negative}</p>
+          <p>{analytics.negative}</p>
         </div>
 
         <div>
           <strong>Feedback Rate</strong>
-          <p>{feedbackRate.toFixed(1)}%</p>
+          <p>{analytics.feedback_rate.toFixed(1)}%</p>
         </div>
 
         <div>
           <strong>Helpfulness Rate</strong>
-          <p>{helpfulnessRate.toFixed(1)}%</p>
+          <p>{analytics.helpfulness_rate.toFixed(1)}%</p>
+        </div>
+
+        <div>
+          <strong>Feedback Chunks</strong>
+          <p>{analytics.feedback_chunks}</p>
+        </div>
+
+        <div>
+          <strong>Positive Chunks</strong>
+          <p>{analytics.positive_chunks}</p>
+        </div>
+
+        <div>
+          <strong>Negative Chunks</strong>
+          <p>{analytics.negative_chunks}</p>
         </div>
       </div>
 
       <h3>Most Retrieved Pages</h3>
 
-      {analytics.top_pages && analytics.top_pages.length > 0 ? (
+      {analytics.top_pages.length === 0 ? (
+        <p>No page data available yet.</p>
+      ) : (
         <ol>
           {analytics.top_pages.map(([page, count]) => (
             <li key={page}>
@@ -102,8 +103,6 @@ function Analytics() {
             </li>
           ))}
         </ol>
-      ) : (
-        <p>No page data available yet.</p>
       )}
 
       <button onClick={loadAnalytics}>
@@ -114,4 +113,5 @@ function Analytics() {
 }
 
 export default Analytics;
+
 
