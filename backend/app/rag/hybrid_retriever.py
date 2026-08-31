@@ -1,6 +1,8 @@
+
 from app.rag.vector_store import search_chunks
 from app.rag.bm25 import bm25_search
 from app.rag.reranker import rerank
+from app.services.feedback_scorer import load_feedback_scores
 
 
 def retrieve(query, query_embedding, top_k=5):
@@ -9,14 +11,15 @@ def retrieve(query, query_embedding, top_k=5):
 
     1. Retrieve semantic + BM25 candidates
     2. Fuse both retrieval methods
-    3. Cross-encoder reranks the fused candidates
-    4. Return the best top_k chunks
+    3. Apply feedback-based score adjustment
+    4. Cross-encoder reranks the candidates
+    5. Return the best top_k chunks
 
-    Uses filename + page + chunk as the unique key
-    so multiple PDFs cannot overwrite each other's chunks.
+    Feedback:
+    Positive feedback boosts a chunk.
+    Negative feedback penalizes a chunk.
     """
 
-    # Retrieve more candidates
     semantic_results = search_chunks(
         query_embedding,
         n_results=10,
@@ -58,7 +61,6 @@ def retrieve(query, query_embedding, top_k=5):
             r["score"] for r in keyword_results
         )
 
-        # Avoid division by zero
         if max_score > 0:
 
             for result in keyword_results:
@@ -82,6 +84,18 @@ def retrieve(query, query_embedding, top_k=5):
                         "metadata": result["metadata"],
                         "score": normalized * 0.3,
                     }
+
+    # ---------------- Feedback Adjustment ----------------
+
+    feedback_scores = load_feedback_scores()
+
+    for key, result in fused.items():
+
+        feedback = feedback_scores.get(key, 0)
+
+        # Small adjustment so feedback helps without
+        # overpowering semantic/BM25 retrieval.
+        result["score"] += feedback * 0.05
 
     # ---------------- Sort Fused Results ----------------
 
@@ -117,3 +131,4 @@ def retrieve(query, query_embedding, top_k=5):
     )
 
     return final_results
+
